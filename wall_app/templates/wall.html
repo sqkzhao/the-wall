@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Success</title>
+    <style>
+        div {
+            border: 1px solid burlywood;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1 class="col">CodingDojo Wall</h1>
+            <nav class="col nav justify-content-end">
+                <p class="nav-link">Welcome, {{request.session.user_name}}!</p>
+                <a href="/logout" class="nav-link">Log Off</a>
+            </nav>
+        </div>
+        <!-- post message box -->
+        <div>
+            <form action="/wall/post_message" method="post">
+                {% csrf_token %}
+                <label>Post a message</label>
+                <textarea name="message"></textarea>
+                <input type="submit" value="Post a message">
+            </form>
+        </div>
+        <!-- login message -->
+        <div>
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success" role="alert">{{message}}</div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">{{message}}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <!-- all messages -->
+        <div>
+            {% for msg in all_messages %}
+                <div>
+                    <h6>{{msg.user.first_name}} {{msg.user.last_name}} - {{msg.created_at.date}}</h6>
+                    <p>{{msg.message}}</p>
+                    {% if request.session.user_id == msg.user.id %}
+                        <form action="/wall/delete_message" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="msg_id" value={{msg.id}}>
+                            <input type="submit" value="Delete">
+                        </form>
+                    {% endif %}
+                    <!-- comments for the message -->
+                    <div>
+                        {% for comment in msg.comments.all %}
+                            <h6>{{comment.user.first_name}} {{comment.user.last_name}} - {{comment.created_at}}</h6>
+                            <p>{{comment.comment}}</p>
+                        {% endfor %}
+                        <form action="/wall/post_comment" method="post">
+                            {% csrf_token %}
+                            <label>Post a comment</label>
+                            <textarea name="comment"></textarea>
+                            <input type="hidden" name="msg_id" value={{msg.id}}>
+                            <input type="submit" value="Post a comment">
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
