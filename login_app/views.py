@@ -44,4 +44,5 @@ def success(request):
 
 def logout(request):
     request.session.clear()
+    messages.success(request, "Logout successfully!")
     return redirect('/')

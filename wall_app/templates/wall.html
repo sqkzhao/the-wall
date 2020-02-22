@@ -5,29 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Success</title>
-    <style>
-        div {
-            border: 1px solid burlywood;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
+        <!-- nav -->
         <div class="row">
             <h1 class="col">CodingDojo Wall</h1>
             <nav class="col nav justify-content-end">
                 <p class="nav-link">Welcome, {{request.session.user_name}}!</p>
                 <a href="/logout" class="nav-link">Log Off</a>
             </nav>
-        </div>
-        <!-- post message box -->
-        <div>
-            <form action="/wall/post_message" method="post">
-                {% csrf_token %}
-                <label>Post a message</label>
-                <textarea name="message"></textarea>
-                <input type="submit" value="Post a message">
-            </form>
         </div>
         <!-- login message -->
         <div>
@@ -39,31 +26,41 @@
                 {% endif %}
             {% endfor %}
         </div>
+        <!-- post message box -->
+        <div class="mx-auto col-11 mt-3">
+            <form action="/wall/post_message" method="post">
+                {% csrf_token %}
+                <h4>Post a message</h4>
+                <textarea name="message" class="form-group form-control col-8"></textarea>
+                <input type="submit" value="Post a message" class="btn btn-primary">
+            </form>
+        </div>
         <!-- all messages -->
         <div>
             {% for msg in all_messages %}
-                <div>
-                    <h6>{{msg.user.first_name}} {{msg.user.last_name}} - {{msg.created_at.date}}</h6>
-                    <p>{{msg.message}}</p>
+                <div class="mx-auto col-11">
+                    <h6 class="mt-3">{{msg.user.first_name}} {{msg.user.last_name}} - {{msg.created_at.date}}</h6>
+                    <p class="mx-auto col-11">{{msg.message}}</p>
+                    <!-- delete message button -->
                     {% if request.session.user_id == msg.user.id %}
                         <form action="/wall/delete_message" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="msg_id" value={{msg.id}}>
-                            <input type="submit" value="Delete">
+                            <input type="submit" value="Delete" class="btn btn-primary">
                         </form>
                     {% endif %}
                     <!-- comments for the message -->
-                    <div>
+                    <div class="mx-auto col-10 my-3">
                         {% for comment in msg.comments.all %}
                             <h6>{{comment.user.first_name}} {{comment.user.last_name}} - {{comment.created_at}}</h6>
                             <p>{{comment.comment}}</p>
                         {% endfor %}
                         <form action="/wall/post_comment" method="post">
                             {% csrf_token %}
-                            <label>Post a comment</label>
-                            <textarea name="comment"></textarea>
+                            <h6>Post a comment</h6>
+                            <textarea name="comment" class="form-group form-control col-8"></textarea>
                             <input type="hidden" name="msg_id" value={{msg.id}}>
-                            <input type="submit" value="Post a comment">
+                            <input type="submit" value="Post a comment" class="btn btn-primary">
                         </form>
                     </div>
                 </div>

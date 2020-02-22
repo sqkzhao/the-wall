@@ -8,14 +8,18 @@
 </head>
 <body>
     <div class="container mt-3">
-        <div>
+        <!-- login/logout message -->
+        <div class="col-11 mx-auto">
             {% for message in messages %}
-                <!-- if message.extra_tags == 'first_name' -->
-                <!-- return messages.error(request, value, extra_tags=key) (views) -->
-                <div class="alert alert-danger small" role="alert">{{message}}</div>
+                {% if message.tags == 'success' %}
+                    <div class="alert alert-success small" role="alert">{{message}}</div>
+                {% else %}
+                    <div class="alert alert-danger small" role="alert">{{message}}</div>
+                {% endif %}
             {% endfor %}
         </div>
         <div class="row justify-content-md-center">
+            <!-- registration -->
             <div class="col-5 mt-3">
                 <h1>Register</h1>
                 <form action="/register" method="post">
@@ -37,6 +41,7 @@
             </div>
             <div class="col-1 mt-3"></div>
             <div class="col-5 mt-3">
+                <!-- login -->
                 <h1>Login</h1>
                 <form action="/login" method="post">
                     {% csrf_token %}
